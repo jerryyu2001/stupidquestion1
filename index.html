@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>部署測試頁</title>
+<style>
+  :root {
+    --bg: #f6f7f9;
+    --card: #ffffff;
+    --fg: #1a1d21;
+    --muted: #6b7280;
+    --line: #e3e6ea;
+    --ok: #15803d;
+    --ok-bg: #eaf6ee;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #14171a;
+      --card: #1c2024;
+      --fg: #e8eaed;
+      --muted: #9aa3ad;
+      --line: #2c3238;
+      --ok: #4ade80;
+      --ok-bg: #16281d;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    padding: 24px;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC",
+                 "PingFang TC", "Microsoft JhengHei", sans-serif;
+    line-height: 1.6;
+  }
+  .card {
+    width: 100%;
+    max-width: 560px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 36px 32px;
+  }
+  .badge {
+    display: inline-block;
+    background: var(--ok-bg);
+    color: var(--ok);
+    font-size: 13px;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 999px;
+    margin-bottom: 18px;
+  }
+  h1 { font-size: 24px; margin: 0 0 8px; letter-spacing: -0.01em; }
+  p.lead { margin: 0 0 26px; color: var(--muted); }
+  dl { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 10px 20px; font-size: 14px; }
+  dt { color: var(--muted); white-space: nowrap; }
+  dd { margin: 0; word-break: break-all; }
+  code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 13px;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 5px;
+    padding: 1px 6px;
+  }
+  footer {
+    margin-top: 26px;
+    padding-top: 18px;
+    border-top: 1px solid var(--line);
+    font-size: 13px;
+    color: var(--muted);
+  }
+</style>
+</head>
+<body>
+  <main class="card">
+    <span class="badge">● 部署成功</span>
+    <h1>這是一個佔位測試頁</h1>
+    <p class="lead">部署流程已經打通。之後只要把正式的 HTML 覆蓋掉這個檔案並推上 GitHub，網站就會自動更新。</p>
+
+    <dl>
+      <dt>網址</dt>
+      <dd id="host">—</dd>
+      <dt>載入時間</dt>
+      <dd id="time">—</dd>
+      <dt>連線</dt>
+      <dd id="proto">—</dd>
+      <dt>更新方式</dt>
+      <dd>置換 <code>index.html</code> → <code>git push</code></dd>
+    </dl>
+
+    <footer>STR Network · 由 GitHub Pages 部署，Cloudflare 代管 DNS</footer>
+  </main>
+
+<script>
+  document.getElementById('host').textContent = location.host || '(本機預覽)';
+  document.getElementById('time').textContent =
+    new Date().toLocaleString('zh-TW', { hour12: false });
+  document.getElementById('proto').textContent =
+    location.protocol === 'https:' ? 'HTTPS（憑證正常）' : location.protocol;
+</script>
+</body>
+</html>

@@ -1,0 +1,19 @@
+# 系統檔
+.DS_Store
+Thumbs.db
+
+# 編輯器
+.vscode/
+.idea/
+*.swp
+
+# 機密：絕對不要進 repo
+.env
+.env.*
+*.pem
+*.key
+secrets/
+credentials*.json
+
+# 相依套件與建置產物
+node_modules/
