@@ -126,6 +126,8 @@ canvas.pxart{width:180px;height:180px;image-rendering:pixelated;border:var(--px)
       <p>各位好，我是潘瑋翔 Hawkins pan。請先花十分鐘回答十一題。</p>
       <p>這不是考試。沒有分數，也不會告訴你「正解」。每一題答完，你只會看到一件事：<span style="color:var(--amber)">一個在這行摔了八年的人，會怎麼選。</span></p>
       <p class="dim">憑直覺作答，不用查資料。你此刻怎麼想，就怎麼選。<span style="color:var(--amber)">您有三分鐘答題。</span>答完歡迎把最後一頁截圖，分享給你想一起吵的人。</p>
+      <input class="name" id="player-name" type="text" maxlength="20" autocomplete="name"
+             aria-label="你的名字（選填）" placeholder="你的名字（選填）">
       <button class="btn" id="start">▶ PRESS START</button>
     </section>
 
@@ -234,6 +236,7 @@ const FLOW = [
 const L = ["A","B","C","D"];
 let flowIdx = 0, ans = [], ansMeta = [];
 let startedAt = null, finishedAt = null, timerInt = null;
+let playerName = "";
 const $ = s => document.querySelector(s);
 const sT=$("#s-title"), sQ=$("#s-q"), sJ=$("#s-joke"), sE=$("#s-end");
 const prog=$("#prog");
@@ -405,6 +408,7 @@ function submit(sameCount){
   sameCount,
   answers:ansMeta,
   ua:navigator.userAgent,
+  name:playerName,
   token:COLLECT_TOKEN});
  fetch(COLLECT_URL,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:payload})
   .catch(()=>{try{navigator.sendBeacon(COLLECT_URL,new Blob([payload],{type:"text/plain;charset=utf-8"}));}catch(e){}});
@@ -413,6 +417,7 @@ function submit(sameCount){
 /* ══════════ 開始 / 重來 ══════════ */
 $("#start").addEventListener("click",()=>{
  beep(880,.08);startMusic();
+ playerName=(($("#player-name")||{}).value||"").trim().slice(0,20);
  flowIdx=0;ans=[];ansMeta=[];
  startTimer();
  renderStep();});
