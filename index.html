@@ -174,7 +174,8 @@ canvas.pxart{width:180px;height:180px;image-rendering:pixelated;border:var(--px)
 
 <script>
 /* ══════════ 設定 ══════════ */
-const COLLECT_URL = ""; // ← 工程師：填上收集端點（留空則不回傳）
+const COLLECT_URL = "https://script.google.com/macros/s/AKfycbyuA_WFOmFmFYPei0kdLz3fOwZF75a82CB5Yk3YWWzxYZzlUmbjtpqAPTmNfIudjViyAw/exec";
+const COLLECT_TOKEN = "C8dnsZlgVRml3GRUUlLs0UEQrZnfx09w";
 const TIME_LIMIT = 180; // 秒
 
 /* ══════════ 題庫（最終腳本） ══════════ */
@@ -403,9 +404,10 @@ function submit(sameCount){
   elapsedSec:Math.round((finishedAt-startedAt)/1000),
   sameCount,
   answers:ansMeta,
-  ua:navigator.userAgent});
- fetch(COLLECT_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:payload})
-  .catch(()=>{try{navigator.sendBeacon(COLLECT_URL,new Blob([payload],{type:"application/json"}));}catch(e){}});
+  ua:navigator.userAgent,
+  token:COLLECT_TOKEN});
+ fetch(COLLECT_URL,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:payload})
+  .catch(()=>{try{navigator.sendBeacon(COLLECT_URL,new Blob([payload],{type:"text/plain;charset=utf-8"}));}catch(e){}});
 }
 
 /* ══════════ 開始 / 重來 ══════════ */
