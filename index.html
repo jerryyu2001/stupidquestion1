@@ -2,109 +2,425 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="robots" content="noindex, nofollow">
-<title>部署測試頁</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>打不贏的規格戰 — 十一題</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=DotGothic16&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #f6f7f9;
-    --card: #ffffff;
-    --fg: #1a1d21;
-    --muted: #6b7280;
-    --line: #e3e6ea;
-    --ok: #15803d;
-    --ok-bg: #eaf6ee;
-  }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg: #14171a;
-      --card: #1c2024;
-      --fg: #e8eaed;
-      --muted: #9aa3ad;
-      --line: #2c3238;
-      --ok: #4ade80;
-      --ok-bg: #16281d;
-    }
-  }
-  * { box-sizing: border-box; }
-  body {
-    margin: 0;
-    min-height: 100vh;
-    display: grid;
-    place-items: center;
-    padding: 24px;
-    background: var(--bg);
-    color: var(--fg);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC",
-                 "PingFang TC", "Microsoft JhengHei", sans-serif;
-    line-height: 1.6;
-  }
-  .card {
-    width: 100%;
-    max-width: 560px;
-    background: var(--card);
-    border: 1px solid var(--line);
-    border-radius: 14px;
-    padding: 36px 32px;
-  }
-  .badge {
-    display: inline-block;
-    background: var(--ok-bg);
-    color: var(--ok);
-    font-size: 13px;
-    font-weight: 600;
-    padding: 4px 12px;
-    border-radius: 999px;
-    margin-bottom: 18px;
-  }
-  h1 { font-size: 24px; margin: 0 0 8px; letter-spacing: -0.01em; }
-  p.lead { margin: 0 0 26px; color: var(--muted); }
-  dl { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 10px 20px; font-size: 14px; }
-  dt { color: var(--muted); white-space: nowrap; }
-  dd { margin: 0; word-break: break-all; }
-  code {
-    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-    font-size: 13px;
-    background: var(--bg);
-    border: 1px solid var(--line);
-    border-radius: 5px;
-    padding: 1px 6px;
-  }
-  footer {
-    margin-top: 26px;
-    padding-top: 18px;
-    border-top: 1px solid var(--line);
-    font-size: 13px;
-    color: var(--muted);
-  }
+@font-face{font-family:'Cubic11';src:url('https://cdn.jsdelivr.net/gh/ACh-K/Cubic-11@main/fonts/Cubic_11.woff2') format('woff2');font-display:swap;}
+:root{--bg:#0b0d1a;--panel:#12152b;--ink:#c8ffb0;--ink-dim:#6fa86a;--amber:#ffb340;--red:#ff5c5c;--blue:#5ec8ff;--white:#f4f4f0;--border:#2a2f55;--px:4px;}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{background:var(--bg);color:var(--ink);font-family:'Cubic11','DotGothic16','Press Start 2P','Microsoft JhengHei','PingFang TC',monospace;line-height:1.8;-webkit-font-smoothing:none;image-rendering:pixelated;}
+body{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:16px;
+background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px);background-size:100% 4px;}
+.latin{font-family:'Press Start 2P','Cubic11',monospace;}
+.crt{width:100%;max-width:720px;background:var(--panel);border:var(--px) solid var(--border);
+box-shadow:0 0 0 var(--px) #000,inset 0 0 0 var(--px) #050612;position:relative;overflow:hidden;}
+.crt::after{content:"";position:absolute;inset:0;pointer-events:none;
+background:repeating-linear-gradient(0deg,rgba(0,0,0,.18) 0 2px,transparent 2px 4px);}
+.bar{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 16px;
+border-bottom:var(--px) solid var(--border);font-size:11px;color:var(--ink-dim);position:relative;z-index:2;}
+.bar .latin{font-size:10px;letter-spacing:1px;}
+.bar .right{display:flex;align-items:center;gap:12px;}
+#timer{font-family:'Press Start 2P',monospace;font-size:11px;color:var(--amber);}
+#timer.over{color:var(--red);animation:blink 1s steps(2) infinite;}
+#mute{background:transparent;border:3px solid var(--border);color:var(--ink);font:inherit;font-size:11px;padding:4px 8px;cursor:pointer;}
+#mute:hover{border-color:var(--amber);}
+.stage{padding:24px 20px 28px;min-height:420px;position:relative;z-index:1;}
+h1{font-size:22px;line-height:1.7;color:var(--white);margin-bottom:8px;}
+h2{font-size:14px;color:var(--amber);margin-bottom:16px;letter-spacing:1px;}
+p{font-size:15px;color:var(--ink);margin-bottom:14px;}
+.dim{color:var(--ink-dim);}
+.eyebrow{font-size:10px;color:var(--amber);letter-spacing:2px;margin-bottom:12px;}
+.q{font-size:17px;color:var(--white);line-height:1.9;margin-bottom:20px;}
+.opts{display:grid;gap:10px;}
+.opt{display:flex;gap:12px;align-items:flex-start;text-align:left;width:100%;background:transparent;
+color:var(--ink);border:var(--px) solid var(--border);padding:12px 14px;font:inherit;font-size:15px;
+line-height:1.7;cursor:pointer;}
+.opt .k{color:var(--amber);flex:0 0 auto;font-family:'Press Start 2P',monospace;font-size:12px;padding-top:4px;}
+.opt:hover,.opt:focus-visible{border-color:var(--amber);background:#1a1d3a;outline:none;}
+.opt:focus-visible{box-shadow:0 0 0 var(--px) var(--amber);}
+.opt.picked{border-color:var(--white);background:#1c2040;}
+.opt.pw{border-color:var(--amber);}
+.opt:disabled{cursor:default;}
+.btn{display:inline-block;background:var(--amber);color:#1a1200;border:var(--px) solid #000;
+padding:12px 18px;font:inherit;font-size:14px;cursor:pointer;box-shadow:var(--px) var(--px) 0 #000;margin-top:8px;}
+.btn:hover,.btn:focus-visible{background:#ffcc70;outline:none;}
+.btn:active{transform:translate(2px,2px);box-shadow:2px 2px 0 #000;}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--border);box-shadow:none;}
+.btn:disabled{opacity:.45;cursor:default;}
+input.name{width:100%;max-width:340px;background:#0d1024;border:var(--px) solid var(--border);color:var(--white);
+font:inherit;font-size:16px;padding:10px 12px;margin:4px 0 14px;}
+input.name:focus{outline:none;border-color:var(--amber);}
+.reveal{margin-top:20px;border:var(--px) solid var(--amber);padding:16px;background:#151834;animation:pop .18s steps(3) both;}
+@keyframes pop{from{transform:scale(.96);opacity:0}to{transform:scale(1);opacity:1}}
+.reveal .who{font-size:11px;color:var(--amber);letter-spacing:2px;margin-bottom:8px;}
+.reveal .pick{font-size:16px;color:var(--white);margin-bottom:10px;}
+.reveal .pick b{color:var(--amber);font-family:'Press Start 2P',monospace;font-size:14px;}
+.reveal .note{font-size:15px;color:var(--ink);line-height:1.9;}
+.tag{display:inline-block;font-family:'Press Start 2P',monospace;font-size:9px;padding:6px 8px;border:3px solid;margin-left:8px;vertical-align:middle;}
+.tag.same{color:var(--ink);border-color:var(--ink);}
+.tag.diff{color:var(--blue);border-color:var(--blue);}
+.progress{display:flex;gap:6px;flex-wrap:wrap;}
+.progress i{width:14px;height:14px;border:3px solid var(--border);display:inline-block;}
+.progress i.done{background:var(--ink);border-color:var(--ink);}
+.progress i.cur{border-color:var(--amber);animation:blink 1s steps(2) infinite;}
+@keyframes blink{50%{background:var(--amber)}}
+.summary{margin:16px 0;border:var(--px) solid var(--border);}
+.summary .row{display:grid;grid-template-columns:44px 1fr 44px 44px;gap:8px;padding:8px 12px;border-bottom:3px solid var(--border);font-size:13px;align-items:center;}
+.summary .row:last-child{border-bottom:none;}
+.summary .h{color:var(--ink-dim);font-size:10px;letter-spacing:1px;}
+.summary .a{font-family:'Press Start 2P',monospace;font-size:12px;color:var(--white);text-align:center;}
+.summary .a.pw{color:var(--amber);}
+.summary .t{color:var(--ink);overflow:hidden;white-space:nowrap;text-overflow:ellipsis;}
+.big{font-size:44px;color:var(--amber);font-family:'Press Start 2P',monospace;line-height:1.2;margin:8px 0;}
+.elapsed{font-size:15px;color:var(--white);margin-bottom:14px;}
+.elapsed b{color:var(--amber);font-family:'Press Start 2P',monospace;font-size:14px;}
+.foot{padding:10px 16px;border-top:var(--px) solid var(--border);font-size:10px;color:var(--ink-dim);display:flex;justify-content:space-between;position:relative;z-index:2;}
+.hidden{display:none;}
+/* joke screen */
+.joke-wrap{text-align:center;padding:16px 0;}
+.joke-label{font-size:10px;color:var(--blue);letter-spacing:3px;margin-bottom:18px;}
+.joke-q{font-size:20px;color:var(--white);line-height:2;margin-bottom:20px;}
+.joke-count{font-family:'Press Start 2P',monospace;font-size:30px;color:var(--amber);margin:16px 0;}
+.joke-a{font-size:26px;color:var(--amber);margin:14px 0;animation:pop .2s steps(3) both;}
+.joke-media{display:flex;justify-content:center;margin:14px 0;}
+.joke-media img{max-width:260px;width:80%;border:var(--px) solid var(--border);}
+canvas.pxart{width:180px;height:180px;image-rendering:pixelated;border:var(--px) solid var(--border);background:#0d1024;animation:bounce 1s steps(4) infinite;}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@media(max-width:480px){.stage{padding:20px 14px 24px;min-height:360px}h1{font-size:18px}.q{font-size:16px}.opt{font-size:14px;padding:10px 12px}.big{font-size:32px}.summary .row{grid-template-columns:36px 1fr 36px 36px;font-size:12px}.joke-q{font-size:17px}}
+@media(prefers-reduced-motion:reduce){.blink,.progress i.cur,.reveal,.joke-a,canvas.pxart,#timer.over{animation:none}}
 </style>
 </head>
 <body>
-  <main class="card">
-    <span class="badge">● 部署成功</span>
-    <h1>這是一個佔位測試頁</h1>
-    <p class="lead">部署流程已經打通。之後只要把正式的 HTML 覆蓋掉這個檔案並推上 GitHub，網站就會自動更新。</p>
+<!--
+════════════════════════════════════════════════════════════
+ 給工程師：
+ 1) 後台回收：把下方 JS 的 COLLECT_URL 填上你們的收集端點。
+    作答完成時會 POST JSON（去識別化，僅隨機 uid）：
+    { uid, startedAt, finishedAt, elapsedSec, sameCount,
+      answers:[{q:1, pick:"A", msFromStart:12345}, ...], ua }
+    Content-Type: application/json。留空字串則不送、純本地。
+    若不想寫後端，可用 Google Apps Script Web App（doPost 存進
+    Google Sheet）產生網址填入即可；失敗會改用 sendBeacon 重試一次。
+ 2) 純靜態單檔，無其他相依；建議 HTTPS（音效/beacon 較穩）。
+ 3) giphy GIF 載入失敗會自動 fallback 成內建像素動畫，不會開天窗。
+════════════════════════════════════════════════════════════
+-->
+<div class="crt" role="main">
+  <div class="bar">
+    <span>台灣內容產業 · 十一題</span>
+    <span class="right">
+      <span id="timer" class="hidden">3:00</span>
+      <span id="hud" class="latin">PLAYER 1</span>
+      <button id="mute" title="音樂開關" aria-label="音樂開關">♪ ON</button>
+    </span>
+  </div>
 
-    <dl>
-      <dt>網址</dt>
-      <dd id="host">—</dd>
-      <dt>載入時間</dt>
-      <dd id="time">—</dd>
-      <dt>連線</dt>
-      <dd id="proto">—</dd>
-      <dt>更新方式</dt>
-      <dd>置換 <code>index.html</code> → <code>git push</code></dd>
-    </dl>
+  <div class="stage" id="stage">
+    <!-- TITLE -->
+    <section id="s-title">
+      <div class="eyebrow">潘瑋翔 · 十一題快問快答</div>
+      <h1>打不贏的規格戰、<br>還沒有人打的那場仗、<br>我們真的打對仗了？</h1>
+      <h2>— 喜劇製作創業，在將死產業裡的八年</h2>
+      <p>各位好，我是潘瑋翔 Hawkins pan。請先花十分鐘回答十一題。</p>
+      <p>這不是考試。沒有分數，也不會告訴你「正解」。每一題答完，你只會看到一件事：<span style="color:var(--amber)">一個在這行摔了八年的人，會怎麼選。</span></p>
+      <p class="dim">憑直覺作答，不用查資料。你此刻怎麼想，就怎麼選。<span style="color:var(--amber)">您有三分鐘答題。</span>答完歡迎把最後一頁截圖，分享給你想一起吵的人。</p>
+      <button class="btn" id="start">▶ PRESS START</button>
+    </section>
 
-    <footer>STR Network · 由 GitHub Pages 部署，Cloudflare 代管 DNS</footer>
-  </main>
+    <!-- QUESTION -->
+    <section id="s-q" class="hidden">
+      <div class="eyebrow" id="q-eyebrow"></div>
+      <div class="q" id="q-text"></div>
+      <div class="opts" id="opts"></div>
+      <div id="reveal-box"></div>
+      <div id="next-wrap" class="hidden"><button class="btn" id="next">下一題 ▶</button></div>
+    </section>
+
+    <!-- JOKE -->
+    <section id="s-joke" class="hidden">
+      <div class="joke-wrap">
+        <div class="joke-label">★ BONUS STAGE · 笑話觀賞時間 ★</div>
+        <div class="joke-q" id="joke-q"></div>
+        <div class="joke-count" id="joke-count">3</div>
+        <div id="joke-reveal" class="hidden">
+          <div class="joke-a" id="joke-a"></div>
+          <div class="joke-media" id="joke-media"></div>
+          <button class="btn" id="joke-next">繼續 ▶</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- END -->
+    <section id="s-end" class="hidden">
+      <div class="eyebrow">結果</div>
+      <p class="dim">你跟潘瑋翔選得一樣的題數</p>
+      <div class="big" id="same-count">0 / 11</div>
+      <div class="elapsed">本次作答時間：<b id="elapsed-text">0 分 00 秒</b></div>
+      <p>這個數字沒有高低之分。一樣，代表我們見面時可以一起懷疑；不一樣，代表你有我沒想到的東西，歡迎跟我分享。</p>
+      <div class="summary" id="summary"></div>
+      <p style="color:var(--white)">沒有分數，沒有正解。<br>哪天遇到了，我們把這些答案一起攤開。</p>
+      <p class="dim">歡迎把這一頁截圖，分享給你想一起吵的人。</p>
+      <button class="btn ghost" id="again">↺ 重來一次</button>
+    </section>
+  </div>
+
+  <div class="foot">
+    <span id="prog-wrap"><span class="progress" id="prog"></span></span>
+    <span class="latin" id="foot-r">STR NETWORK</span>
+  </div>
+</div>
 
 <script>
-  document.getElementById('host').textContent = location.host || '(本機預覽)';
-  document.getElementById('time').textContent =
-    new Date().toLocaleString('zh-TW', { hour12: false });
-  document.getElementById('proto').textContent =
-    location.protocol === 'https:' ? 'HTTPS（憑證正常）' : location.protocol;
+/* ══════════ 設定 ══════════ */
+const COLLECT_URL = ""; // ← 工程師：填上收集端點（留空則不回傳）
+const TIME_LIMIT = 180; // 秒
+
+/* ══════════ 題庫（最終腳本） ══════════ */
+const Q = [
+ {t:"為什麼台灣至今做不出《魷魚遊戲》這種席捲全球的爆款？最關鍵的原因是——",
+  o:["製作預算遠不如韓國","台灣市場太小，回收不了大成本","我們缺乏世界級的編劇與導演人才","這個問題本身可能就問錯了方向"],
+  pw:3, n:"選這個的人不多。我猜你選了 A、B 或 C——其實都對，但我最想聊的第一件事就是：這題本身，是不是就問錯了。"},
+ {t:"韓國影視能成功輸出全球，最該歸功於——",
+  o:["政府長期編列預算、黃金時段禁播外來戲劇等產業政策","韓國人的美感與說故事能力天生較強","財閥資本願意長期投入不求短期回收","以上皆是，但都不是台灣學得來的部分"],
+  pw:3, n:"A 很難反駁。但我更在意最後那句：那些學不來的部分，才是我們該從哪裡開始想的地方。"},
+ {t:"如果給台灣內容產業一筆和韓國同等規模的資金，最可能的結果是——",
+  o:["台灣也能產出比肩韓劇的國際爆款","錢會被少數大公司或炒地集團稀釋掉，產業體質不會真的改變","能拍出好作品，但仍然缺乏國際發行通路，賣不出去","短期有幾部好作品，長期回到原點"],
+  pw:3, n:"我做這行八年，看過錢大量進來、大量出去的樣子；而且我認為台灣不缺錢，更多的是缺好的業務、產品。"},
+ {t:"文化部補助一部評價不佳的電影一億元，這件事最合理的評價是——",
+  o:["浪費納稅錢，補助就是變相要飯，幹","該檢討的是評選機制，把錢給對的人","補助的目的本就不是獎勵好作品，用單片成敗評價補助是搞錯了對象","政府根本不該補助內容產業，交給市場決定"],
+  pw:2, n:"這是我最想跟大家討論的一題。先別急著同意我，記住你剛剛選的。"},
+ {t:"「補助應該只給有商業潛力、能回收的作品」——這個主張的問題在於——",
+  o:["沒有問題，這才是負責任的用錢方式","有商業潛力的作品本來就找得到民間資金，最需要補助的恰恰是還沒被市場證明的","商業潛力無法事前準確判斷","B 和 C 都是"],
+  pw:2, n:"B 也對。但如果連「有沒有潛力」都判斷不了，那「只補助有潛力的」這句話，本身不合邏輯。"},
+ {t:"台灣每年花在內容補助的錢，如果全部停掉，最可能發生什麼？",
+  o:["沒差，本來就是浪費","少數靠補助續命的公司倒閉，但強者生存，產業更健康","短期看不出差別，但練習量與新人斷層會在五到十年後讓產業加速衰亡","產業會被迫轉向商業市場，反而更快找到自己的活路"],
+  pw:2, n:"這邊大概可以看出左派/右派。"},
+ {t:"當我們說「好羨慕韓國有《寄生上流》」，我們真正羨慕的其實是——",
+  o:["那部作品本身","能持續、穩定生產出這種作品的環境與系統","韓國演員和導演的才華","奧斯卡對亞洲內容的認可"],
+  pw:1, n:"這題不藏了，我就選 B。我想講的，其實都是這一題。"},
+ {t:"一個國家的內容產業是否健康，最好的判斷指標是——",
+  o:["有沒有拿下國際大獎的代表作","頭部作品的票房或點擊數字","一個沒沒無聞的新人，有沒有機會靠這行活下來並被看見","有沒有國際級的明星和 IP"],
+  pw:2, n:"我猶豫過 D，因為我在做 IP，我知道 IP 值錢。後來想通了一件事——哪天遇到我，問我。"},
+ {t:"中國的豎屏短劇（微短劇）年產值已達數百億人民幣、席捲全球。台灣內容產業面對這股浪潮，最該做的是——",
+  o:["盡快投入豎屏短劇賽道，趁早卡位、不要落後","由 LINE TV、CatchPlay、電信平台OTT（例：Hami Video）等本土平台開發可滑短影音功能，留住用戶","完全不碰，這是一場資本與演算法的規格戰，投入等於送死","只在能把單支成本壓到極低的前提下，小規模嘗試"],
+  pw:3, n:"我一開始想選 C，因為等於是把競爭賽道放到 TikTok、Instagram 等巨頭的領域內。後來想了一下，其實 D 就是它的前提。"},
+ {t:"以下哪個「小國／小市場突圍」的模式，你認為最可能適合台灣？",
+  o:["以色列模式：極小市場，卻靠原創劇本輸出、被歐美大量翻拍","北歐模式：靠強烈地域風格（Nordic Noir）建立辨識度賣全球","紐西蘭模式：靠承接國際製作，建立後製與場景工業","台灣還沒有找到自己的模式，需要原創一種"],
+  pw:0, n:"以色列不是標準答案。我選它，是因為它是四個裡最不靠規模贏的那個。"},
+ {t:"如果你是台灣內容產業的決策者，只能做一件事，你會賭——",
+  o:["集中資源打造一部能得國際大獎的旗艦作品","建立台灣自己的強勢發行平台／通路，擺脫被國際平台綁架","大量投資低成本、快迭代的內容，養厚中間層與新人","用台灣獨有的題材（政治、言論自由等大國拍不了的）建立不可取代性"],
+  pw:3, n:"我賭了八年的就是這個。代價是什麼——哪天遇到我，問我。"}
+];
+
+const JOKES = [
+ {q:"什麼東西遠看像水桶，近看破個洞？", a:"破水桶",
+  gif:"https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExZnN4cGNuNTdqc2trY2M4NXdnNmZydTllMTF2cDYweGpkNHhjMzMxOCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/jfKiMjWolBzuWkdbw0/giphy.gif",
+  art:"bucket"},
+ {q:"什麼東西紅紅的吃了對牙齒不好？", a:"紅磚", gif:null, art:"brick"}
+];
+
+/* 流程：Q1–Q4 → 笑話1 → Q5–Q8 → 笑話2 → Q9–Q11 */
+const FLOW = [
+ {type:"q",i:0},{type:"q",i:1},{type:"q",i:2},{type:"q",i:3},
+ {type:"joke",j:0},
+ {type:"q",i:4},{type:"q",i:5},{type:"q",i:6},{type:"q",i:7},
+ {type:"joke",j:1},
+ {type:"q",i:8},{type:"q",i:9},{type:"q",i:10}
+];
+
+const L = ["A","B","C","D"];
+let flowIdx = 0, ans = [], ansMeta = [];
+let startedAt = null, finishedAt = null, timerInt = null;
+const $ = s => document.querySelector(s);
+const sT=$("#s-title"), sQ=$("#s-q"), sJ=$("#s-joke"), sE=$("#s-end");
+const prog=$("#prog");
+
+/* ══════════ 音效 & 音樂 ══════════ */
+let AC=null, musicOn=true, musicTimer=null, musicStep=0;
+function ctx(){if(!AC){AC=new (window.AudioContext||window.webkitAudioContext)();}
+ if(AC.state==="suspended"){AC.resume();}return AC;}
+function beep(f=660,d=.06,vol=.03){try{const c=ctx();const o=c.createOscillator(),g=c.createGain();o.type="square";o.frequency.value=f;g.gain.value=vol;o.connect(g);g.connect(c.destination);o.start();o.stop(c.currentTime+d);}catch(e){}}
+/* uplifting 8-bit loop：C 大調五聲音階，旋律+低音兩軌，約 150 BPM */
+const MELODY=[523,659,784,659, 880,784,659,523, 587,659,784,880, 1047,880,784,659,
+              523,659,784,880, 784,659,587,659, 523,587,659,784, 659,587,523,0];
+const BASS  =[131,0,196,0, 220,0,196,0, 147,0,196,0, 262,0,196,0,
+              131,0,196,0, 165,0,147,0, 131,0,165,0, 196,0,131,0];
+function playNote(f,dur,vol,type){if(!f)return;try{const c=ctx();const o=c.createOscillator(),g=c.createGain();
+o.type=type;o.frequency.value=f;g.gain.setValueAtTime(vol,c.currentTime);
+g.gain.exponentialRampToValueAtTime(.0001,c.currentTime+dur);
+o.connect(g);g.connect(c.destination);o.start();o.stop(c.currentTime+dur);}catch(e){}}
+function musicTick(){if(!musicOn)return;
+ playNote(MELODY[musicStep%MELODY.length],.12,.05,"square");
+ playNote(BASS[musicStep%BASS.length],.2,.055,"triangle");
+ musicStep++;}
+function startMusic(){if(musicTimer)return;const c=ctx();
+ if(c.state==="suspended"){c.resume();}
+ musicTimer=setInterval(musicTick,100);}
+function stopMusic(){clearInterval(musicTimer);musicTimer=null;}
+$("#mute").addEventListener("click",()=>{musicOn=!musicOn;
+ $("#mute").textContent=musicOn?"♪ ON":"♪ OFF";beep(musicOn?880:330);});
+
+/* ══════════ 像素畫備援 ══════════ */
+const ARTS={
+ bucket:{w:12,h:12,c:{" ":null,"g":"#9aa3b2","d":"#5c6470","o":"#0d1024","h":"#12152b"},
+  m:["  gggggggg  ",
+     " g........g ",
+     " gggggggggg ",
+     "  g......g  ",
+     "  g......g  ",
+     "  g..hh..g  ",
+     "  g.h  h.g  ",
+     "   g.hh.g   ",
+     "   g....g   ",
+     "   gggggg   ",
+     "            ",
+     "            "].map(r=>r.replace(/\./g,"d"))},
+ brick:{w:12,h:12,c:{" ":null,"r":"#d9442b","l":"#f0705a","m":"#7a2416","w":"#f4f4f0"},
+  m:["            ",
+     "            ",
+     " rrrrrrrrrr ",
+     " rllrrrrllr ",
+     " rrrrmrrrrr ",
+     " rrrrrrrrrr ",
+     " rmrrrrrmrr ",
+     " rrrrrrrrrr ",
+     " rrllrrrrrr ",
+     " rrrrrrrrrr ",
+     "   w w  w   ",
+     "            "]}
+};
+function drawArt(name){const a=ARTS[name];const cv=document.createElement("canvas");
+ cv.width=a.w;cv.height=a.h;cv.className="pxart";const x=cv.getContext("2d");
+ a.m.forEach((row,ry)=>{[...row].forEach((ch,rx)=>{const col=a.c[ch];
+  if(col){x.fillStyle=col;x.fillRect(rx,ry,1,1);}});});
+ return cv;}
+
+/* ══════════ 計時 ══════════ */
+function fmtClock(s){const m=Math.floor(Math.abs(s)/60),ss=Math.abs(s)%60;
+ return `${s<0?"+":""}${m}:${String(ss).padStart(2,"0")}`;}
+function startTimer(){startedAt=Date.now();$("#timer").classList.remove("hidden");
+ timerInt=setInterval(()=>{const el=Math.floor((Date.now()-startedAt)/1000);
+  const remain=TIME_LIMIT-el;const t=$("#timer");
+  if(remain>=0){t.textContent=fmtClock(remain);t.classList.remove("over");}
+  else{t.textContent="OVER "+fmtClock(remain);t.classList.add("over");}},250);}
+function stopTimer(){finishedAt=Date.now();clearInterval(timerInt);}
+
+/* ══════════ 畫面切換 ══════════ */
+function show(sec){[sT,sQ,sJ,sE].forEach(s=>s.classList.add("hidden"));sec.classList.remove("hidden");window.scrollTo({top:0});}
+function qNumberOfFlow(idx){let n=0;for(let k=0;k<=idx;k++){if(FLOW[k].type==="q")n++;}return n;}
+function drawProg(){const cur=FLOW[flowIdx]&&FLOW[flowIdx].type==="q"?FLOW[flowIdx].i:-1;
+ prog.innerHTML=Q.map((_,k)=>`<i class="${ans[k]!==undefined?'done':k===cur?'cur':''}"></i>`).join("");}
+
+/* ══════════ 題目 ══════════ */
+function renderStep(){
+ const step=FLOW[flowIdx];
+ if(!step){finish();return;}
+ if(step.type==="joke"){renderJoke(step.j);return;}
+ const q=Q[step.i];
+ show(sQ);
+ $("#q-eyebrow").textContent=`第 ${step.i+1} 題 / 共 ${Q.length} 題`;
+ $("#q-text").textContent=q.t;
+ $("#opts").innerHTML=q.o.map((o,k)=>`<button class="opt" data-k="${k}"><span class="k">${L[k]}</span><span>${o}</span></button>`).join("");
+ $("#reveal-box").innerHTML="";
+ $("#next-wrap").classList.add("hidden");
+ $("#hud").textContent=`Q${step.i+1}`;
+ drawProg();
+ document.querySelectorAll(".opt").forEach(b=>b.addEventListener("click",pick));
+}
+function pick(e){
+ const step=FLOW[flowIdx], qi=step.i, q=Q[qi], k=+e.currentTarget.dataset.k;
+ ans[qi]=k;
+ ansMeta[qi]={q:qi+1,pick:L[k],msFromStart:Date.now()-startedAt};
+ beep(k===q.pw?880:520);
+ document.querySelectorAll(".opt").forEach(b=>{b.disabled=true;
+  if(+b.dataset.k===k)b.classList.add("picked");
+  if(+b.dataset.k===q.pw)b.classList.add("pw");});
+ const same=k===q.pw;
+ $("#reveal-box").innerHTML=`<div class="reveal">
+  <div class="who">潘瑋翔的選擇</div>
+  <div class="pick">他選了 <b>${L[q.pw]}</b><span class="tag ${same?'same':'diff'}">${same?'SAME':'DIFF'}</span></div>
+  <div class="note">${q.n}</div></div>`;
+ const isLastQ=qi===Q.length-1;
+ $("#next").textContent=isLastQ?"看結果 ▶":"下一題 ▶";
+ $("#next-wrap").classList.remove("hidden");
+ $("#next").focus();
+ drawProg();
+}
+$("#next").addEventListener("click",()=>{beep(700);
+ const step=FLOW[flowIdx];
+ if(step.type==="q"&&step.i===Q.length-1){stopTimer();finish();return;}
+ flowIdx++;renderStep();});
+
+/* ══════════ 笑話 ══════════ */
+function renderJoke(j){
+ const joke=JOKES[j];
+ show(sJ);
+ $("#hud").textContent="BONUS";
+ $("#joke-q").textContent=joke.q;
+ $("#joke-reveal").classList.add("hidden");
+ $("#joke-count").classList.remove("hidden");
+ let c=3;$("#joke-count").textContent=c;
+ beep(660,.05);
+ const int=setInterval(()=>{c--;
+  if(c>0){$("#joke-count").textContent=c;beep(660,.05);}
+  else{clearInterval(int);
+   $("#joke-count").classList.add("hidden");
+   $("#joke-a").textContent=joke.a;
+   const media=$("#joke-media");media.innerHTML="";
+   if(joke.gif){const img=document.createElement("img");
+    img.alt=joke.a;img.src=joke.gif;
+    img.onerror=()=>{media.innerHTML="";media.appendChild(drawArt(joke.art));};
+    media.appendChild(img);}
+   else{media.appendChild(drawArt(joke.art));}
+   $("#joke-reveal").classList.remove("hidden");
+   beep(523,.08);setTimeout(()=>beep(784,.1),90);setTimeout(()=>beep(1047,.12),200);
+  }},1000);
+}
+$("#joke-next").addEventListener("click",()=>{beep(700);flowIdx++;renderStep();});
+
+/* ══════════ 結尾 & 回收 ══════════ */
+function fmtElapsed(ms){const s=Math.round(ms/1000);return `${Math.floor(s/60)} 分 ${String(s%60).padStart(2,"0")} 秒`;}
+function finish(){
+ show(sE);
+ const same=ans.filter((a,k)=>a===Q[k].pw).length;
+ $("#same-count").textContent=`${same} / ${Q.length}`;
+ $("#elapsed-text").textContent=fmtElapsed(finishedAt-startedAt);
+ $("#summary").innerHTML=`<div class="row h"><span>題</span><span>題目</span><span>你</span><span>潘</span></div>`+
+  Q.map((q,k)=>`<div class="row"><span class="a">${k+1}</span><span class="t">${q.t}</span><span class="a">${L[ans[k]]}</span><span class="a pw">${L[q.pw]}</span></div>`).join("");
+ $("#hud").textContent="END";
+ flowIdx=FLOW.length;drawProg();
+ beep(660,.08);setTimeout(()=>beep(990,.12),100);
+ submit(same);
+}
+function submit(sameCount){
+ if(!COLLECT_URL)return;
+ const payload=JSON.stringify({
+  uid:(crypto.randomUUID?crypto.randomUUID():Date.now()+"-"+Math.random().toString(36).slice(2)),
+  startedAt:new Date(startedAt).toISOString(),
+  finishedAt:new Date(finishedAt).toISOString(),
+  elapsedSec:Math.round((finishedAt-startedAt)/1000),
+  sameCount,
+  answers:ansMeta,
+  ua:navigator.userAgent});
+ fetch(COLLECT_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:payload})
+  .catch(()=>{try{navigator.sendBeacon(COLLECT_URL,new Blob([payload],{type:"application/json"}));}catch(e){}});
+}
+
+/* ══════════ 開始 / 重來 ══════════ */
+$("#start").addEventListener("click",()=>{
+ beep(880,.08);startMusic();
+ flowIdx=0;ans=[];ansMeta=[];
+ startTimer();
+ renderStep();});
+$("#again").addEventListener("click",()=>{beep(600);
+ stopMusic();clearInterval(timerInt);
+ $("#timer").classList.add("hidden");$("#timer").classList.remove("over");
+ flowIdx=0;ans=[];ansMeta=[];startedAt=null;finishedAt=null;
+ drawProg();$("#hud").textContent="PLAYER 1";
+ show(sT);});
+drawProg();
 </script>
 </body>
 </html>
