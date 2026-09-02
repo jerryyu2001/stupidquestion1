@@ -38,11 +38,11 @@ p{font-size:15px;color:var(--ink);margin-bottom:14px;}
 color:var(--ink);border:var(--px) solid var(--border);padding:12px 14px;font:inherit;font-size:15px;
 line-height:1.7;cursor:pointer;}
 .opt .k{color:var(--amber);flex:0 0 auto;font-family:'Press Start 2P',monospace;font-size:12px;padding-top:4px;}
-.opt:hover,.opt:focus-visible{border-color:var(--amber);background:#1a1d3a;outline:none;}
-.opt:focus-visible{box-shadow:0 0 0 var(--px) var(--amber);}
+.opt:not(:disabled):hover,.opt:not(:disabled):focus-visible{border-color:var(--amber);background:#1a1d3a;outline:none;}
+.opt:not(:disabled):focus-visible{box-shadow:0 0 0 var(--px) var(--amber);}
 .opt.picked{border-color:var(--white);background:#1c2040;}
 .opt.pw{border-color:var(--amber);}
-.opt:disabled{cursor:default;}
+.opt:disabled{cursor:default;pointer-events:none;-webkit-tap-highlight-color:transparent;}
 .btn{display:inline-block;background:var(--amber);color:#1a1200;border:var(--px) solid #000;
 padding:12px 18px;font:inherit;font-size:14px;cursor:pointer;box-shadow:var(--px) var(--px) 0 #000;margin-top:8px;}
 .btn:hover,.btn:focus-visible{background:#ffcc70;outline:none;}
